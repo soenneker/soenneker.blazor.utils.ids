@@ -1,0 +1,19 @@
+@page "/"
+@using System.Threading.Tasks
+
+
+<PageTitle>Soenneker.Blazor.Utils.Ids Demo</PageTitle>
+
+<Div Space="Space.Y.Is4">
+    <Paragraph TextSize="TextSize.Sm" Class="text-muted-foreground">
+
+    </Paragraph>
+</Div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+    }
+}

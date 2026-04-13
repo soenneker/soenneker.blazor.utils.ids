@@ -8,7 +8,7 @@ using Soenneker.Extensions.Spans.Chars;
 namespace Soenneker.Blazor.Utils.Ids;
 
 /// <summary>
-/// Generates stable, human-readable IDs for Blazor components and ARIA relationships.
+/// A lightweight ID generator for consistent identity across the UI for Blazor components.
 /// </summary>
 public static class BlazorIdGenerator
 {

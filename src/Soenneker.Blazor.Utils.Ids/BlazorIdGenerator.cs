@@ -18,7 +18,7 @@ public static class BlazorIdGenerator
     /// Generates a new unique, human-readable ID using the specified prefix.
     /// </summary>
     /// <param name="prefix">
-    /// The prefix to prepend to the generated ID. This value must not be null, empty, or whitespace.
+    /// The prefix to prepend to the generated ID. This value must not be null, empty, or contain whitespace.
     /// </param>
     /// <returns>
     /// A unique ID in the format "{prefix}-{number}", where <c>number</c> is a monotonically increasing value.
@@ -28,13 +28,12 @@ public static class BlazorIdGenerator
     /// and ARIA relationships. The numeric portion is generated using a thread-safe incrementing counter.
     /// </remarks>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="prefix"/> is null, empty, or consists only of whitespace.
+    /// Thrown when <paramref name="prefix"/> is null, empty, or contains whitespace.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string New(string prefix)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(prefix);
+        ValidateSegment(prefix, nameof(prefix));
 
         long next = Interlocked.Increment(ref _count);
         int digits = next.DigitCountPositiveOnly();
@@ -56,10 +55,10 @@ public static class BlazorIdGenerator
     /// Creates a derived child ID by appending a suffix to an existing parent ID.
     /// </summary>
     /// <param name="parentId">
-    /// The base ID to extend. This value must not be null, empty, or whitespace.
+    /// The base ID to extend. This value must not be null, empty, or contain whitespace.
     /// </param>
     /// <param name="suffix">
-    /// The suffix to append to the parent ID. This value must not be null, empty, or whitespace.
+    /// The suffix to append to the parent ID. This value must not be null, empty, or contain whitespace.
     /// </param>
     /// <returns>
     /// A new ID in the format "{parentId}-{suffix}".
@@ -69,15 +68,26 @@ public static class BlazorIdGenerator
     /// that share a common root identifier for accessibility and structural consistency.
     /// </remarks>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="parentId"/> or <paramref name="suffix"/> is null, empty, or consists only of whitespace.
+    /// Thrown when <paramref name="parentId"/> or <paramref name="suffix"/> is null, empty, or contains whitespace.
     /// </exception>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Child(string parentId, string suffix)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(parentId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(suffix);
+        ValidateSegment(parentId, nameof(parentId));
+        ValidateSegment(suffix, nameof(suffix));
 
         return string.Concat(parentId, "-", suffix);
+    }
+
+    private static void ValidateSegment(string value, string parameterName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);
+
+        foreach (char character in value)
+        {
+            if (char.IsWhiteSpace(character))
+                throw new ArgumentException("DOM ID segments cannot contain whitespace.", parameterName);
+        }
     }
 }

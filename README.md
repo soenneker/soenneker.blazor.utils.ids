@@ -4,33 +4,40 @@
 [![](https://img.shields.io/badge/Demo-Live-blueviolet?style=for-the-badge&logo=github)](https://soenneker.github.io/soenneker.blazor.utils.ids)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.blazor.utils.ids/codeql.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.blazor.utils.ids/actions/workflows/codeql.yml)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Blazor.Utils.Ids
-### A lightweight ID generator for consistent identity across the UI for Blazor components.
+# Soenneker.Blazor.Utils.Ids
 
-## Installation
+A lightweight ID generator for consistent identity across the UI for Blazor components.
+
+## Install
 
 ```bash
 dotnet add package Soenneker.Blazor.Utils.Ids
 ```
 
-## Setup
-
-Register services in `Program.cs`:
+## Quick start
 
 ```csharp
-builder.Services.AddBlazorIdGeneratorAsScoped();
+using Soenneker.Blazor.Utils.Ids;
+
+var result = BlazorIdGenerator.New("value");
 ```
 
-Inject the higher-level utility where you need it:
+Generates a new unique, human-readable ID using the specified prefix.
 
-```csharp
-@inject IBlazorIdGenerator Ids
-```
+## What you get
 
-## Usage
+- `BlazorIdGenerator` — A lightweight ID generator for consistent identity across the UI for Blazor components.
 
-Initialize the package once before first use:
+## API at a glance
 
-```csharp
-await Ids.Initialize();
-```
+| API | What it does | Result / important behavior |
+| --- | --- | --- |
+| `BlazorIdGenerator.New(prefix)` | Generates a new unique, human-readable ID using the specified prefix. | A unique ID in the format "{prefix}-{number}", where `number` is a monotonically increasing value. |
+| `BlazorIdGenerator.Child(parentId, suffix)` | Creates a derived child ID by appending a suffix to an existing parent ID. | A new ID in the format "{parentId}-{suffix}". |
+
+## Important behavior
+
+- `BlazorIdGenerator.New(prefix)`: The generated ID is guaranteed to be unique within the current process and is suitable for use in DOM elements and ARIA relationships. The numeric portion is generated using a thread-safe incrementing counter.
+- `BlazorIdGenerator.New(prefix)`: Thrown when `prefix` is null, empty, or consists only of whitespace.
+- `BlazorIdGenerator.Child(parentId, suffix)`: This method is typically used to generate related element IDs (e.g., trigger, content, label) that share a common root identifier for accessibility and structural consistency.
+- `BlazorIdGenerator.Child(parentId, suffix)`: Thrown when `parentId` or `suffix` is null, empty, or consists only of whitespace.

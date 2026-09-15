@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using System.Threading;
+using Soenneker.Atomics.Longs;
 using Soenneker.Extensions.Long;
 using Soenneker.Extensions.Spans.Chars;
 
@@ -12,7 +12,7 @@ namespace Soenneker.Blazor.Utils.Ids;
 /// </summary>
 public static class BlazorIdGenerator
 {
-    private static long _count;
+    private static AtomicLong _count;
 
     /// <summary>
     /// Generates a new unique, human-readable ID using the specified prefix.
@@ -35,7 +35,7 @@ public static class BlazorIdGenerator
     {
         ValidateSegment(prefix, nameof(prefix));
 
-        long next = Interlocked.Increment(ref _count);
+        long next = _count.Increment();
         int digits = next.DigitCountPositiveOnly();
 
         return string.Create(prefix.Length + 1 + digits, (prefix, next, digits), static (span, state) =>
@@ -82,7 +82,7 @@ public static class BlazorIdGenerator
 
     private static void ValidateSegment(string value, string parameterName)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);
+        ArgumentException.ThrowIfNullOrEmpty(value, parameterName);
 
         foreach (char character in value)
         {

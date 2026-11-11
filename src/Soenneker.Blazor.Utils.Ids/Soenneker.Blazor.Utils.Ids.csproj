@@ -45,6 +45,6 @@
     <ItemGroup>
         <PackageReference Include="Soenneker.Atomics.Longs" Version="11.0.38" />
         <PackageReference Include="Soenneker.Extensions.Long" Version="11.0.249" />
-        <PackageReference Include="Soenneker.Extensions.Spans.Chars" Version="11.0.62" />
+        <PackageReference Include="Soenneker.Extensions.Spans.Chars" Version="11.0.63" />
     </ItemGroup>
 </Project>
